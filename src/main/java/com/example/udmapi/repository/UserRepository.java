@@ -10,10 +10,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    List<User> findByOnlineAndStatusTimestampAfter (boolean online, Timestamp statusTimestamp);
+    List<User> findByOnlineAndStatusTimestampAfter(boolean online, Timestamp statusTimestamp);
     List<User> findByOnline (boolean online);
     List<User> findByStatusTimestampAfter (Timestamp statusTimestamp);
-
-
-
 }

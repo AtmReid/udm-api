@@ -3,29 +3,27 @@ package com.example.udmapi.controller;
 
 import com.example.udmapi.Settings;
 import com.example.udmapi.entity.User;
-import com.example.udmapi.exeption.BadRequestException;
-import com.example.udmapi.service.UserService;
+import com.example.udmapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/users")
 public class RootController {
 
-
-
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
+
 
     @GetMapping
     public List<User> showAllUsers(@RequestParam(value = "online", required = false) Boolean online,
@@ -43,8 +41,13 @@ public class RootController {
     }
 
     @GetMapping("{id}")
-    public User getEmployee(@PathVariable int id) {
-        User user = userService.getUser(id);
+    public User getUser(@PathVariable int id) {
+        User user = null;
+
+        Optional<User> optional = userRepository.findById(id);
+        if (optional.isPresent()){
+            user = optional.get();
+        }
         return user;
     }
 
@@ -53,7 +56,7 @@ public class RootController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provide correct User");
         }
-        userService.saveUser(user);
+        userRepository.save(user);
         return user;
     }
 
