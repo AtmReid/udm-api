@@ -7,6 +7,8 @@ import org.hibernate.validator.constraints.Email;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private long id;
+    private int id;
 
     @Column(name = "name")
     @NotNull
@@ -33,8 +35,8 @@ public class User {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "role")
-    private String role;
+    @OneToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    private List<Role> roles;
 
     @Column(name = "online")
     private boolean online;

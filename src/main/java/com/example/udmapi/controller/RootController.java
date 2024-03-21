@@ -3,6 +3,7 @@ package com.example.udmapi.controller;
 
 import com.example.udmapi.Settings;
 import com.example.udmapi.entity.User;
+import com.example.udmapi.repository.ImageRepository;
 import com.example.udmapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -23,6 +25,9 @@ public class RootController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
 
     @GetMapping
@@ -69,12 +74,14 @@ public class RootController {
             directory.mkdir();
         }
 
-        String fileName = file.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString()+".jpg";
+
 
         if (fileName != null && !fileName.endsWith("jpg")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provide correct jpg");
         }
 
+        imageRepository.save(fileName);
         File avatarFile = new File(directory.getPath() + File.separator + fileName);
         FileOutputStream fileOutputStream = new FileOutputStream(avatarFile);
         fileOutputStream.write(file.getBytes());
